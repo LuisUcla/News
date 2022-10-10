@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Noticias
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openFilter()">
+        <ion-icon slot="icon-only" name="filter"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Noticias</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ng-container *ngIf="!loaded">
+    <ion-card *ngFor="let i of [].constructor(5);">
+      <ion-skeleton-text style="height: 200px;" [animated]="true"></ion-skeleton-text>
+      <ion-card-header>
+        <ion-card-subtitle>
+          <ion-skeleton-text [animated]="true" style="width: 30%"></ion-skeleton-text>
+        </ion-card-subtitle>
+        <ion-card-title><ion-skeleton-text [animated]="true" style="width: 60%"></ion-skeleton-text></ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="card-content">
+        <ion-skeleton-text [animated]="true" style="width: 80%;"></ion-skeleton-text>
+        <ion-skeleton-text [animated]="true" style="width: 60%;"></ion-skeleton-text>
+        <ion-skeleton-text [animated]="true" style="width: 30%;"></ion-skeleton-text>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+  
+  <ng-container *ngIf="loaded">
+    <a [href]="new.url" target="_blank" *ngFor="let new of listNews">
+      <ion-card>
+        <img [src]="new.urlToImage"/>
+        <ion-card-header>  
+          <ion-card-title>{{ new.title }}</ion-card-title>
+        </ion-card-header>
+  
+        <ion-card-content>
+          {{ new.description }}
+          <hr>
+          <span>    
+            <ion-badge color="dark">{{ new.source.name }} </ion-badge>
+            <ion-note>
+              <ion-icon color="dark" name="calendar-clear"></ion-icon>
+              <ion-label>{{ new.publishedAt | date: 'dd-MM-yyyy, h:mm a' }}</ion-label>
+            </ion-note>
+            
+          </span>
+        </ion-card-content>
+      </ion-card>
+    </a>
+  </ng-container>
+
+</ion-content>
