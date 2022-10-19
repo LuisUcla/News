@@ -14,7 +14,7 @@
   <ion-list>
     <ion-item>
       <ion-label>Pais</ion-label>
-      <ion-select [(ngModel)]="pais">
+      <ion-select [(ngModel)]="pais" cancelText="Cancelar" okText="Ok">
         <ion-select-option *ngFor="let pais of paises" [value]="pais.value">{{ pais.nombre }}</ion-select-option>
     
       </ion-select>
@@ -22,11 +22,8 @@
 
     <ion-item>
       <ion-label>Categoria</ion-label>
-      <ion-select [(ngModel)]="categoria">
+      <ion-select [(ngModel)]="categoria" cancelText="Cancelar" okText="Ok">
         <ion-select-option *ngFor="let categoria of categorias" [value]="categoria.value">{{ categoria.nombre }}</ion-select-option>
-        <ion-select-option value="deportes">Deportes</ion-select-option>
-        <ion-select-option value="salud">Salud</ion-select-option>
-        <ion-select-option value="internacionales">Internacionales</ion-select-option>
       </ion-select>
     </ion-item>
   </ion-list>

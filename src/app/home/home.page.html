@@ -17,6 +17,14 @@
       <ion-title size="large">Noticias</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" pullFactor="0.5" pullMin="150" pullMax="200">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Deslise hacia abajo para obtener mas noticias..."
+      refreshingSpinner="circular"
+      refreshingText="Cargando Noticias...">
+    </ion-refresher-content>
+  </ion-refresher>
 
   <ng-container *ngIf="!loaded">
     <ion-card *ngFor="let i of [].constructor(5);">
@@ -57,6 +65,15 @@
         </ion-card-content>
       </ion-card>
     </a>
+  </ng-container>
+
+  <ng-container *ngIf="error">
+    <div class="error">
+      <img src="../../assets/images/error_theapplication_2964.png">
+      <h3>Ha ocurrido un error</h3>
+      <p>Comprueba tu conexión y actualiza la página.</p>
+      <ion-button fill="outline" color="dark" (click)="getNews()">Actualizar</ion-button>
+    </div>
   </ng-container>
 
 </ion-content>
