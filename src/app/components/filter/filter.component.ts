@@ -8,8 +8,10 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
+  pais: string = ''; // variable 'pais' para capturar dicho dato en el formulario
+  categoria: string = ''; //variable 'categoria' para capturar dicho dato en el formulario
 
-  categorias: any[] = [
+  categorias: any[] = [ // listado de las categorias para aplicar en el filtro
     { value: "general", nombre: "General" },
     { value: "business", nombre: "Negocios" },
     { value: "entertainment", nombre: "Entretenimiento" },
@@ -19,7 +21,7 @@ export class FilterComponent implements OnInit {
     { value: "technology", nombre: "Tecnologia" },
   ];
 
-  paises: any[] = [
+  paises: any[] = [ // listado de paises para aplicar el filtro
     { value: "ve", nombre: "Venezuela" },
     { value: "ar", nombre: "Argentina"  },
     { value: "br", nombre: "Brasil" },
@@ -28,38 +30,36 @@ export class FilterComponent implements OnInit {
 
   constructor(private modalCtrl: ModalController) { }
 
-  pais: string = '';
-  categoria: string = '';
-
+  
   ngOnInit() {
     this.getLocalStore();
   }
 
-  close(action: string) {
-    if (action == 'aply' && this.pais && this.categoria) {
-      const data = {
+  close(action: string) { // cierra el modal
+    if (action == 'aply' && this.pais && this.categoria) { // verifico que las dos variables tengan datos
+      const data = { // creo un objeto con los datos del formulario
         pais: this.pais,
         categoria: this.categoria
       }
 
-      this.modalCtrl.dismiss(data, 'confirm');
+      this.modalCtrl.dismiss(data, 'confirm'); // envio los datos
     } else {
       this.modalCtrl.dismiss(null, 'cancel');
     }
 
-    this.saveLocalStore(this.pais, this.categoria); // guarda en el local store para cuando el usuario vuelva a la vista de flitro
-
+    this.saveLocalStore(this.pais, this.categoria); // guarda en el local store para cuando el usuario vuelva a la vista de filtro
   }
 
-  saveLocalStore(pais: string, categoria: string) {
+  saveLocalStore(pais: string, categoria: string) { // guarda en el local store
     const data = {
       categoria: categoria,
       pais: pais
     }
+
     localStorage.setItem('data', JSON.stringify(data));
   }
 
-  getLocalStore() {
+  getLocalStore() { // obtiene los valores de local storage
     const data = JSON.parse(localStorage.getItem('data'));
 
     if (data) {

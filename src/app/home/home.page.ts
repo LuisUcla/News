@@ -14,13 +14,13 @@ export class HomePage implements OnInit {
   categoria: string = 'general'; // general por defecto
   pais: string = 've'; // venezuela por defecto
   listNews: any[] = []; // listado de noticias 
-  error: boolean = false; // para mostrar mjs en cosa de error de internet o otros.
+  error: boolean = false; // para mostrar mjs en caso de error de internet u otros.
 
   constructor(private modalCtrl: ModalController, private noticiasServices: NoticiasService) {}
 
   ngOnInit(): void {
-    this.getNews(); // carga las noticias con los parametros por defecto 've', 'general'
-    this.clearLocalStore(); // limpia el store al inicio de la app.
+    this.getNews();
+    this.clearLocalStore();
   }
 
   doRefresh(event) { // refresca la pagina haciendo pull hacia abajo
@@ -33,7 +33,7 @@ export class HomePage implements OnInit {
       pais: this.pais
     }
 
-    this.noticiasServices.getNoticias(parametros).subscribe((news:any) => {
+    this.noticiasServices.getNoticias(parametros).subscribe((news: any) => {
       this.loaded = true;
       this.listNews = news.articles;
       event.target.complete();
@@ -41,24 +41,22 @@ export class HomePage implements OnInit {
       event.target.complete();
       this.error = true;
       this.loaded = true;
-      // colocar toast para mostrar un mjs en caso de error
-    })
+    });
 
   }
 
-  async openFilter() { // lanza el  modal para aplicar los filtros
+  async openFilter() { // lanza el modal para aplicar los filtros
     const modal = await this.modalCtrl.create({
       component: FilterComponent,
       canDismiss: true,
-      //presentingElement: this.routerOutlet.nativeEl,
-      initialBreakpoint: 0.50,
+      initialBreakpoint: 0.5, // muestra el modal a la mitad de la pantalla
       backdropBreakpoint: 0.25,
       breakpoints: [0, 0.25, 0.5, 0.75, 1]
     });
 
     await modal.present();  
 
-    const { data, role } = await modal.onWillDismiss();
+    const { data, role } = await modal.onWillDismiss(); // obtiene los datos del componente hijo (modal)
 
     if (role === 'confirm') {
       this.pais = data.pais;
@@ -68,12 +66,12 @@ export class HomePage implements OnInit {
 
   }
 
-  clearLocalStore() { // limpia las variables del local store
+  clearLocalStore() { // limpia las variables del local store al inicio de la app
     localStorage.removeItem('data');
   }
 
-  getNews() {
-    this.loaded = false;
+  getNews() { // carga las noticias con los parametros por defecto: 've', 'general'
+    this.loaded = false; // se muestran los skeleton mientras se carga la data
     this.error = false;
     this.listNews = [];
 
@@ -82,15 +80,12 @@ export class HomePage implements OnInit {
       pais: this.pais
     }
 
-    this.noticiasServices.getNoticias(parametros).subscribe((news:any) => {
-      this.loaded = true;
-      this.listNews = news.articles;
-      console.log(this.listNews);
-    }, (error) => {
-      console.log(error);
+    this.noticiasServices.getNoticias(parametros).subscribe((news: any) => {
+      this.loaded = true; // se oculta los skeleton
+      this.listNews = news.articles; // datos cargados
+    }, () => {
       this.error = true;
       this.loaded = true;
-      // colocar toast para mostrar un mjs en caso de error
     })
   }
 
