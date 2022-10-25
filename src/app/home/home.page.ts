@@ -48,7 +48,6 @@ export class HomePage implements OnInit {
   async openFilter() { // lanza el modal para aplicar los filtros
     const modal = await this.modalCtrl.create({
       component: FilterComponent,
-      canDismiss: true,
       initialBreakpoint: 0.5, // muestra el modal a la mitad de la pantalla
       backdropBreakpoint: 0.25,
       breakpoints: [0, 0.25, 0.5, 0.75, 1]
