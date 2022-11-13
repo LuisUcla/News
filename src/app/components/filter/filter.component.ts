@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-filter',
@@ -28,44 +28,29 @@ export class FilterComponent implements OnInit {
     { value: "fr", nombre: "Francia" },
   ];
 
-  constructor(private modalCtrl: ModalController) { }
+  constructor(private popoverCtrl: PopoverController) { }
 
   
   ngOnInit() {
     this.getLocalStore();
   }
 
-  close(action: string) { // cierra el modal
-    if (action == 'aply' && this.pais && this.categoria) { // verifico que las dos variables tengan datos
-      const data = { // creo un objeto con los datos del formulario
-        pais: this.pais,
-        categoria: this.categoria
-      }
-
-      this.modalCtrl.dismiss(data, 'confirm'); // envio los datos
-    } else {
-      this.modalCtrl.dismiss(null, 'cancel');
-    }
-
-    this.saveLocalStore(this.pais, this.categoria); // guarda en el local store para cuando el usuario vuelva a la vista de filtro
+  close() { // cierra el modal
+    this.popoverCtrl.dismiss();   
   }
 
-  saveLocalStore(pais: string, categoria: string) { // guarda en el local store
-    const data = {
-      categoria: categoria,
-      pais: pais
-    }
-
-    localStorage.setItem('data', JSON.stringify(data));
+  saveLocalStore(categoria: string) { // guarda en el local store
+    localStorage.setItem('categoria', JSON.stringify(categoria));
   }
 
   getLocalStore() { // obtiene los valores de local storage
-    const data = JSON.parse(localStorage.getItem('data'));
+    const categoria = JSON.parse(localStorage.getItem('categoria'));
+    this.categoria = categoria;
+  }
 
-    if (data) {
-      this.categoria = data.categoria;
-      this.pais = data.pais;
-    }
+  selectCategoria(categoria: string) {
+    this.popoverCtrl.dismiss({ categoria: categoria }, 'confirm'); // envio los datos
+    this.saveLocalStore(this.categoria); // guarda en el local store para cuando el usuario vuelva a la vista de filtro
   }
 
 }

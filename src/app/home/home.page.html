@@ -4,7 +4,7 @@
       Noticias
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="openFilter()">
+      <ion-button (click)="openFilter($event)">
         <ion-icon slot="icon-only" name="filter"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -66,6 +66,8 @@
         </ion-card-content>
       </ion-card>
     </a>
+
+    <ion-button color="dark" expand="block" size="large" class="buttonScroll" (click)="scrollToTop()">Ir al inicio</ion-button>
   </ng-container>
 
   <ng-container *ngIf="error">

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonContent, PopoverController } from '@ionic/angular';
 import { FilterComponent } from '../components/filter/filter.component';
 import { NoticiasService } from '../services/noticias.service';
 
@@ -9,6 +9,7 @@ import { NoticiasService } from '../services/noticias.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
+  @ViewChild(IonContent) content: IonContent;
 
   loaded: boolean = false; // se usa para mostrar los skeleton de simulacion de carga de las noticias
   categoria: string = 'general'; // general por defecto
@@ -16,7 +17,7 @@ export class HomePage implements OnInit {
   listNews: any[] = []; // listado de noticias 
   error: boolean = false; // para mostrar mjs en caso de error de internet u otros.
 
-  constructor(private modalCtrl: ModalController, private noticiasServices: NoticiasService) {}
+  constructor(private popoverCtrl: PopoverController, private noticiasServices: NoticiasService) {}
 
   ngOnInit(): void {
     this.getNews();
@@ -45,20 +46,18 @@ export class HomePage implements OnInit {
 
   }
 
-  async openFilter() { // lanza el modal para aplicar los filtros
-    const modal = await this.modalCtrl.create({
+  async openFilter(e: Event) { // lanza el modal para aplicar los filtros
+    const popover = await this.popoverCtrl.create({
       component: FilterComponent,
-      initialBreakpoint: 0.5, // muestra el modal a la mitad de la pantalla
-      backdropBreakpoint: 0.25,
-      breakpoints: [0, 0.25, 0.5, 0.75, 1]
+      event: e
     });
 
-    await modal.present();  
+    await popover.present();  
 
-    const { data, role } = await modal.onWillDismiss(); // obtiene los datos del componente hijo (modal)
+    const { data, role } = await popover.onDidDismiss(); // obtiene los datos del componente hijo (modal)
 
+    console.log(data);
     if (role === 'confirm') {
-      this.pais = data.pais;
       this.categoria = data.categoria;
       this.getNews();
     }
@@ -66,7 +65,7 @@ export class HomePage implements OnInit {
   }
 
   clearLocalStore() { // limpia las variables del local store al inicio de la app
-    localStorage.removeItem('data');
+    localStorage.removeItem('categoria');
   }
 
   getNews() { // carga las noticias con los parametros por defecto: 've', 'general'
@@ -75,8 +74,9 @@ export class HomePage implements OnInit {
     this.listNews = [];
 
     const parametros = { // default
+      pais: this.pais,
       categoria: this.categoria,
-      pais: this.pais
+      
     }
 
     this.noticiasServices.getNoticias(parametros).subscribe((news: any) => {
@@ -86,6 +86,12 @@ export class HomePage implements OnInit {
       this.error = true;
       this.loaded = true;
     })
+  }
+
+  scrollToTop() {
+    // Passing a duration to the method makes it so the scroll slowly
+    // goes to the bottom instead of instantly
+    this.content.scrollToTop(500);
   }
 
 }
